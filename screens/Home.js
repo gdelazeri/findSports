@@ -83,7 +83,7 @@ export default class Home extends React.Component {
                   source={image}
                 />
                 <View style={Styles.padding10}>
-                  <Text style={[Styles.text18, Styles.textBold, Styles.marginB5]} numberOfLines={1}>{item.name}</Text>
+                  <Text style={[Styles.text17, Styles.textBold, Styles.marginB5]} numberOfLines={1}>{item.name}</Text>
                   <Text style={[Styles.text15, { color: Colors.lightText }]}>{groups.length} grupo{groups.length > 1 ? 's' : ''}</Text>
                 </View>
               </Card>

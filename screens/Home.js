@@ -72,6 +72,7 @@ export default class Home extends React.Component {
         <FlatList
           data={this.state.sports}
           keyExtractor={(item) => item._id}
+          removeClippedSubviews={true}
           numColumns={2}
           renderItem={({item, index}) => {
             const groups = this.state.groups.filter(g => g.sportId === item._id);

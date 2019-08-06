@@ -7,8 +7,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   TextInput,
-  Keyboard,
-  Platform,
+  Alert,
   AsyncStorage,
 } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
@@ -34,12 +33,33 @@ export default class Group extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.getParam('title'),
+    headerRight: navigation.getParam('groupRemove') ? <TouchableOpacity style={[Styles.paddingR15, Styles.padding10]} onPress={navigation.getParam('groupRemove')} activeOpacity={0.7}>
+      <Icon name='trash-can-outline' type='material-community' color={Colors.red} />
+    </TouchableOpacity> : null,
   })
 
   async componentWillMount() {
     this.groupId = this.props.navigation.getParam('_id');
     this.userId = await AsyncStorage.getItem('userId');
     this.load();
+  }
+
+  async groupRemove() {
+    Alert.alert(
+      'Excluir grupo',
+      'Deseja realmente excluir este grupo?',
+      [
+        { text: 'CANCELAR', onPress: () => { }},
+        { text: 'SIM', onPress: async () => {
+          await API.groupRemove(this.state.group._id);
+          if (this.props.navigation.state.params && this.props.navigation.state.params.onGoBack){
+            this.props.navigation.state.params.onGoBack();
+          }
+          this.props.navigation.goBack();
+        }},
+      ],
+      { cancelable: true },
+    );
   }
 
   async load(refreshing = false) {
@@ -50,7 +70,8 @@ export default class Group extends React.Component {
         title: <View>
           <Text style={[Styles.text16, Styles.textBold]}>{group.name}</Text>
           <Text style={Styles.text12}>{group.sport.name}</Text>
-        </View>
+        </View>,
+        groupRemove: this.userId === group.adminId ? () => this.groupRemove() : null,
       });
       this.setState({ group, loadError: false, refreshing: false, loading: false });
       setInterval(() => this.upload(), 5000);

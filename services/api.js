@@ -77,6 +77,11 @@ export default class API {
     const resp = await API.mutation('group', 'edit', `group: {${toInput(group)}}`, '_id');
     return resp; 
   }
+
+  static async groupRemove(groupId) {
+    const resp = await API.mutation('group', 'remove', `_id: "${groupId}"`, undefined);
+    return resp; 
+  }
   
   static async groupList(sportId) {
     let query = undefined;
@@ -88,7 +93,7 @@ export default class API {
   }
   
   static async groupGet(groupId) {
-    const resp = await API.query('group', 'get', `_id: "${groupId}"`, '_id, name, description, sportId, sport { name }, participantsId, messages { userId, user { name }, text, date }');
+    const resp = await API.query('group', 'get', `_id: "${groupId}"`, '_id, name, description, sportId, adminId, sport { name }, participantsId, messages { userId, user { name }, text, date }');
     return resp;
   }
   

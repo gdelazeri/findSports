@@ -32,7 +32,6 @@ export default class Login extends React.Component {
   async componentWillMount() {
     const userId = await AsyncStorage.getItem('userId');
     if (userId) {
-      AsyncStorage.clear();
       this.props.navigation.navigate('Home');
     } else {
       this.setState({ loading: false });

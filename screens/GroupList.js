@@ -8,6 +8,8 @@ import {
   RefreshControl,
   Dimensions,
   TouchableOpacity,
+  AsyncStorage,
+  Alert,
 } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import moment from 'moment';
@@ -40,11 +42,27 @@ export default class GroupList extends React.Component {
 
   async componentWillMount() {
     this.sportId = this.props.navigation.getParam('sportId');
+    this.userId = await AsyncStorage.getItem('userId');
     this.load();
   }
 
   groupAdd() {
     this.props.navigation.navigate('GroupAdd', { sportId: this.props.navigation.getParam('sportId'), onGoBack: () => this.load() });
+  }
+
+  async groupRemove(groupId) {
+    Alert.alert(
+      'Excluir grupo',
+      'Deseja realmente excluir este grupo?',
+      [
+        { text: 'CANCELAR', onPress: () => { }},
+        { text: 'SIM', onPress: async () => {
+          await API.groupRemove(groupId);
+          this.load(true);
+        }},
+      ],
+      { cancelable: true },
+    );
   }
 
   async load(refreshing = false) {
@@ -78,7 +96,12 @@ export default class GroupList extends React.Component {
           keyExtractor={(item) => item._id}
           renderItem={({item}) => <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.navigate('Group', { _id: item._id, onGoBack: () => this.load() })}>
             <Card containerStyle={Styles.card}>
-              <Text style={[Styles.text17, Styles.textBold]}>{item.name}</Text>
+              <View style={[Styles.inline, Styles.spaceBetween]}>
+                <Text style={[Styles.text17, Styles.textBold]}>{item.name}</Text>
+                {this.userId === item.adminId && <TouchableOpacity onPress={() => this.groupRemove(item._id)} activeOpacity={0.7}>
+                  <Icon name='trash-can-outline' type='material-community' color={Colors.red} size={22} />
+                </TouchableOpacity>}
+              </View>
               <Text style={[Styles.text12, Styles.marginB5, { color: Colors.lightText }]}>{item.admin ? `Criado por ${item.admin.name} em ${moment(item.createdAt).format('DD/MM/YYYY')}` : ''}</Text>
               <Text style={[Styles.text15, { color: Colors.lightText }]}>{item.description}</Text>
             </Card>

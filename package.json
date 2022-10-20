@@ -15,7 +15,7 @@
     "@expo/vector-icons": "^10.0.3",
     "accordion-collapse-react-native": "^0.1.11",
     "d3-array": "^2.2.0",
-    "expo": "^32.0.0",
+    "expo": "^46.0.16",
     "expo-image-deep-zoom": "^2.1.0",
     "lodash": "^4.17.11",
     "lodash.merge": "^4.6.2",
